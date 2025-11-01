@@ -1,43 +1,30 @@
-import { useEffect, useState, useContext } from 'react'
-import client from '../api/client'
-import { AuthContext } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import Sidebar from "../components/Sidebar.jsx";
+import RewardBadge from "../components/RewardBadge.jsx";
+import api from "../api/api.js";
 
 export default function Rewards() {
-  const { user } = useContext(AuthContext)
-  const navigate = useNavigate()
-  const [rewards, setRewards] = useState([])
+  const [rewards, setRewards] = useState([]);
+
+  const fetchRewards = () => {
+    api.get("/rewards/").then((res) => setRewards(res.data));
+  };
 
   useEffect(() => {
-    if (!user) { navigate('/login'); return }
-    async function fetchRewards() {
-      const res = await client.get('/rewards/')
-      setRewards(res.data)
-    }
-    fetchRewards()
-  }, [user, navigate])
-
-  async function redeem(id) {
-    await client.post(`/rewards/redeem/${id}`)
-    alert('Redeemed (demo)')
-  }
+    fetchRewards();
+  }, []);
 
   return (
-    <div>
-      <h2>Rewards</h2>
-      <div className="planner-list">
-        {rewards.map(r => (
-          <div key={r.id} className="planner-card">
-            <div className="card-left">
-              <p className="plan-title">{r.title}</p>
-              <p className="muted">Cost: {r.cost}</p>
-            </div>
-            <div className="card-right">
-              <button className="btn primary" onClick={() => redeem(r.id)}>Redeem</button>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="layout">
+      <Sidebar />
+      <main className="content">
+        <h1>Rewards</h1>
+        <div className="reward-grid">
+          {rewards.map((r) => (
+            <RewardBadge key={r.id} {...r} />
+          ))}
+        </div>
+      </main>
     </div>
-  )
+  );
 }

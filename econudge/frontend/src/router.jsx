@@ -1,29 +1,65 @@
-import { createBrowserRouter } from 'react-router-dom'
-import App from './App'
-import Dashboard from './pages/Dashboard'
-import Nudges from './pages/Nudges'
-import Planner from './pages/Planner'
-import Reports from './pages/Reports'
-import Rewards from './pages/Rewards'
-import Settings from './pages/Settings'
-import Login from './pages/Login'
-import Register from './pages/Register'
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Planner from "./pages/Planner.jsx";
+import Reports from "./pages/Reports.jsx";
+import Settings from "./pages/Settings.jsx";
+import Rewards from "./pages/Rewards.jsx";
+import { useApp } from "./context/AppContext.jsx";
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    children: [
-      { index: true, element: <Dashboard /> },
-      { path: 'nudges', element: <Nudges /> },
-      { path: 'planner', element: <Planner /> },
-      { path: 'reports', element: <Reports /> },
-      { path: 'rewards', element: <Rewards /> },
-      { path: 'settings', element: <Settings /> },
-    ],
-  },
-  { path: '/login', element: <Login /> },
-  { path: '/register', element: <Register /> },
-])
+function PrivateRoute({ children }) {
+  const { user } = useApp();
+  return user ? children : <Navigate to="/login" replace />;
+}
 
-export default router
+export default function AppRouter() {
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/planner"
+        element={
+          <PrivateRoute>
+            <Planner />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/reports"
+        element={
+          <PrivateRoute>
+            <Reports />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/rewards"
+        element={
+          <PrivateRoute>
+            <Rewards />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <PrivateRoute>
+            <Settings />
+          </PrivateRoute>
+        }
+      />
+    </Routes>
+  );
+}

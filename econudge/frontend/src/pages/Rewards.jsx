@@ -25,11 +25,19 @@ export default function Rewards() {
   return (
     <div>
       <h2>Rewards</h2>
-      <ul>
+      <div className="planner-list">
         {rewards.map(r => (
-          <li key={r.id}>{r.title} - cost: {r.cost} <button onClick={() => redeem(r.id)}>Redeem</button></li>
+          <div key={r.id} className="planner-card">
+            <div className="card-left">
+              <p className="plan-title">{r.title}</p>
+              <p className="muted">Cost: {r.cost}</p>
+            </div>
+            <div className="card-right">
+              <button className="btn primary" onClick={() => redeem(r.id)}>Redeem</button>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }

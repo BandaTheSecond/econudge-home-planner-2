@@ -20,11 +20,16 @@ export default function Nudges() {
   return (
     <div>
       <h2>Eco Nudges</h2>
-      <ul>
+      <div className="planner-list">
         {nudges.map(n => (
-          <li key={n.id}><strong>{n.title}</strong> - {n.description} ({n.difficulty})</li>
+          <div key={n.id} className="planner-card">
+            <div className="card-left">
+              <p className="plan-title"><strong>{n.title}</strong></p>
+              <p className="muted">{n.description} ({n.difficulty})</p>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }

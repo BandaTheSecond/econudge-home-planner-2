@@ -27,13 +27,15 @@ export default function Reports() {
     <div>
       <h2>Reports</h2>
       {progress && (
-        <div style={{ width: 300, height: 200 }}>
-          <ResponsiveContainer>
-            <PieChart>
-              <Pie dataKey="value" data={data} label />
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+        <div className="card">
+          <div style={{ width: 300, height: 200 }}>
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie dataKey="value" data={data} label />
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
     </div>

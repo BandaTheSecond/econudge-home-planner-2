@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from app import db
-from app.models.user import User
-from app.schemas.user_schema import user_schema, users_schema
+from ..extensions import db
+from ..models.user import User
+from ..schemas.user_schema import user_schema, users_schema
 
 user_bp = Blueprint("user_bp", __name__)
 
@@ -30,10 +30,12 @@ def create_user():
 
     try:
         new_user = User(
+            username=data.get("username"),
             name=data.get("name"),
             email=data.get("email"),
             password=data.get("password")  # hash this in model or use bcrypt
         )
+        new_user.set_password(data.get("password"))
         db.session.add(new_user)
         db.session.commit()
         return jsonify(user_schema.dump(new_user)), 201
@@ -51,11 +53,12 @@ def update_user(id):
         return jsonify({"error": "User not found"}), 404
 
     data = request.get_json()
+    user.username = data.get("username", user.username)
     user.name = data.get("name", user.name)
     user.email = data.get("email", user.email)
 
     if "password" in data:
-        user.password = data["password"]
+        user.set_password(data["password"])
 
     db.session.commit()
     return jsonify(user_schema.dump(user)), 200

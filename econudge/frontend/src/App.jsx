@@ -1,13 +1,17 @@
-import { Outlet } from 'react-router-dom'
-import Navbar from './components/Navbar'
+import React from "react";
+import AppRouter from "./router.jsx";
+import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
+import { useApp } from "./context/AppContext.jsx";
 
 export default function App() {
+  const { user } = useApp();
+
   return (
-    <div className="app-root">
+    <div className="app-shell">
       <Navbar />
-      <main className="container">
-        <Outlet />
-      </main>
+      <AppRouter />
+      {user && <Footer />}
     </div>
-  )
+  );
 }

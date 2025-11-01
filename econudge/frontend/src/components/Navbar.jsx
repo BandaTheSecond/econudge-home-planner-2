@@ -1,37 +1,40 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { useContext } from 'react'
-import { AuthContext } from '../context/AuthContext'
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useApp } from "../context/AppContext.jsx";
 
 export default function Navbar() {
-  const { user, logout } = useContext(AuthContext)
-  const navigate = useNavigate()
+  const { user, logout } = useApp();
+  const navigate = useNavigate();
 
-  function handleLogout() {
-    logout()
-    navigate('/login')
-  }
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <nav className="navbar">
-      <div className="nav-left">
-        <Link to="/" className="brand">EcoNudge</Link>
+      <div className="navbar-left">
+        <span className="logo">EcoNudge 🌿</span>
       </div>
-      <div className="nav-right">
-        <Link to="/nudges">Nudges</Link>
-        <Link to="/planner">Planner</Link>
-        <Link to="/rewards">Rewards</Link>
-        {user ? (
+      <div className="navbar-right">
+        {!user ? (
           <>
-            <span className="greet">Hi, {user.username || user.name}</span>
-            <button onClick={handleLogout} className="btn-link">Logout</button>
+            <Link to="/login" className="btn-link">
+              Login
+            </Link>
+            <Link to="/register" className="btn-primary">
+              Sign up
+            </Link>
           </>
         ) : (
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Sign up</Link>
+            <span className="user-label">{user.full_name}</span>
+            <button onClick={handleLogout} className="btn-secondary">
+              Logout
+            </button>
           </>
         )}
       </div>
     </nav>
-  )
+  );
 }

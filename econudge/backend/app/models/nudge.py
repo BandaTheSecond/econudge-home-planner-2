@@ -1,22 +1,22 @@
-from app.extensions import db
-from datetime import datetime
+from ..extensions import db
 
 class Nudge(db.Model):
     __tablename__ = "nudges"
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(150), nullable=False)
+    title = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    category = db.Column(db.String(80), default="general")
-    difficulty = db.Column(db.String(50), default="easy")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    difficulty = db.Column(db.String(20), default="easy")  # validation
+    points = db.Column(db.Integer, default=5)
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "title": self.title,
-            "description": self.description,
-            "category": self.category,
-            "difficulty": self.difficulty,
-            "created_at": self.created_at.isoformat()
-        }
+    tags = db.relationship(
+        "Tag",
+        secondary="nudge_tags",
+        back_populates="nudges"
+    )
+
+    users_completed = db.relationship(
+        "User",
+        secondary="user_nudges",
+        back_populates="completed_nudges"
+    )

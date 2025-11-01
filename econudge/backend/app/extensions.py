@@ -8,10 +8,4 @@ db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
 jwt = JWTManager()
-
-def init_extensions(app):
-    db.init_app(app)
-    migrate.init_app(app, db)
-    bcrypt.init_app(app)
-    jwt.init_app(app)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+cors = CORS()

@@ -1,22 +1,19 @@
 from flask import Flask
-from config import Config
-from .extensions import init_extensions
-from .routes import register_blueprints
+from .extensions import db, migrate, bcrypt, jwt, cors
+from .main import register_blueprints
 from .utils.error_handlers import register_error_handlers
-import os
+from config import Config
 
-def create_app(config_class=Config):
-    app = Flask(__name__, instance_relative_config=True)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-    # make sure instance folder exists
-    try:
-        os.makedirs(app.instance_path, exist_ok=True)
-    except OSError:
-        pass
+    db.init_app(app)
+    migrate.init_app(app, db)
+    bcrypt.init_app(app)
+    jwt.init_app(app)
+    cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
 
-    app.config.from_object(config_class)
-
-    init_extensions(app)
     register_blueprints(app)
     register_error_handlers(app)
 

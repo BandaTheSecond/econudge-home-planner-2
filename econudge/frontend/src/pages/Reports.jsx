@@ -1,43 +1,42 @@
-import { useEffect, useState, useContext } from 'react'
-import client from '../api/client'
-import { AuthContext } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
-import { PieChart, Pie, Tooltip, ResponsiveContainer } from 'recharts'
+import React, { useEffect, useState } from "react";
+import Sidebar from "../components/Sidebar.jsx";
+import api from "../api/api.js";
 
 export default function Reports() {
-  const { user } = useContext(AuthContext)
-  const navigate = useNavigate()
-  const [progress, setProgress] = useState(null)
+  const [reports, setReports] = useState([]);
 
   useEffect(() => {
-    if (!user) { navigate('/login'); return }
-    async function fetch() {
-      const res = await client.get('/reports/progress')
-      setProgress(res.data)
-    }
-    fetch()
-  }, [user, navigate])
-
-  const data = progress ? [
-    { name: 'Completed', value: progress.completed_nudges },
-    { name: 'Remaining', value: Math.max(0, 10 - progress.completed_nudges) }
-  ] : []
+    api.get("/reports/").then((res) => setReports(res.data));
+  }, []);
 
   return (
-    <div>
-      <h2>Reports</h2>
-      {progress && (
+    <div className="layout">
+      <Sidebar />
+      <main className="content">
+        <h1>Reports</h1>
         <div className="card">
-          <div style={{ width: 300, height: 200 }}>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie dataKey="value" data={data} label />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Period</th>
+                <th>Total Tasks</th>
+                <th>Completed</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reports.map((r) => (
+                <tr key={r.id}>
+                  <td>{r.period}</td>
+                  <td>{r.total_tasks}</td>
+                  <td>{r.completed_tasks}</td>
+                  <td>{new Date(r.created_at).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
+      </main>
     </div>
-  )
+  );
 }

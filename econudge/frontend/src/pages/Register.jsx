@@ -1,51 +1,71 @@
-import { useState, useContext } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import client from '../api/client'
-import { AuthContext } from '../context/AuthContext'
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../api/api.js";
+import { useApp } from "../context/AppContext.jsx";
 
 export default function Register() {
-  const { login } = useContext(AuthContext)
-  const navigate = useNavigate()
-  const [form, setForm] = useState({ username: '', email: '', password: '' })
-  const [error, setError] = useState(null)
+  const { login } = useApp();
+  const [form, setForm] = useState({ full_name: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    setError(null)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
     try {
-      const res = await client.post('/auth/register', form)
-      const { user, access_token } = res.data
-      login(user, access_token)
-      navigate('/')
+      const res = await api.post("/auth/register", form);
+      login(res.data.user, res.data.access_token);
+      navigate("/");
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed')
+      setError(err?.response?.data?.message || "Registration failed");
     }
-  }
+  };
 
   return (
-    <div className="auth-page">
-      <h2>Create account</h2>
-      <form onSubmit={handleSubmit} className="card">
-        <label>
-          Username
-          <input name="username" value={form.username} onChange={handleChange} required />
-        </label>
-        <label>
-          Email
-          <input name="email" type="email" value={form.email} onChange={handleChange} required />
-        </label>
-        <label>
-          Password
-          <input name="password" type="password" value={form.password} onChange={handleChange} required />
-        </label>
-        {error && <p className="error">{error}</p>}
-        <button type="submit">Register</button>
+    <div className="auth-wrapper">
+      <form className="auth-card" onSubmit={handleSubmit}>
+        <h2>Create account</h2>
+        {error && <p className="error-text">{error}</p>}
+
+        <label>Full name</label>
+        <input
+          name="full_name"
+          type="text"
+          required
+          value={form.full_name}
+          onChange={handleChange}
+        />
+
+        <label>Email</label>
+        <input
+          name="email"
+          type="email"
+          required
+          value={form.email}
+          onChange={handleChange}
+        />
+
+        <label>Password</label>
+        <input
+          name="password"
+          type="password"
+          required
+          value={form.password}
+          onChange={handleChange}
+        />
+
+        <button type="submit" className="btn-primary">
+          Sign up
+        </button>
+
+        <p className="auth-alt">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </form>
-      <p>Have an account? <Link to="/login">Login</Link></p>
     </div>
-  )
+  );
 }

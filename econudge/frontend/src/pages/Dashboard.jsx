@@ -1,46 +1,57 @@
-import { useContext, useEffect, useState } from "react";
-import client from "../api/client";
-import { AuthContext } from "../context/AuthContext";
+import React, { useEffect, useState } from "react";
+import Sidebar from "../components/Sidebar.jsx";
+import NudgeCard from "../components/NudgeCard.jsx";
+import ChartCard from "../components/ChartCard.jsx";
+import api from "../api/api.js";
 
 export default function Dashboard() {
-  const { user } = useContext(AuthContext);
+  const [nudges, setNudges] = useState([]);
   const [weather, setWeather] = useState(null);
 
   useEffect(() => {
-    async function loadWeather() {
-      // calls /api/external/weather (backend should proxy to a real weather API)
-      try {
-        const res = await client.get("/external/weather");
-        setWeather(res.data);
-      } catch (err) {
-        // ignore
-      }
-    }
-    loadWeather();
+    api.get("/nudges/").then((res) => setNudges(res.data)).catch(() => {});
+    api.get("/external/weather?city=Nairobi").then((res) => setWeather(res.data)).catch(() => {});
   }, []);
 
-  return (
-    <div>
-      <h2>Dashboard</h2>
-      <p>Welcome to EcoNudge — track small eco actions, plan them, and earn points.</p>
+  const chartData = [
+    { label: "Mon", value: 3 },
+    { label: "Tue", value: 2 },
+    { label: "Wed", value: 5 },
+    { label: "Thu", value: 4 },
+    { label: "Fri", value: 6 },
+  ];
 
-      {weather && (
-        <div className="weather-card card">
-          <div className="weather-main">
-            <div className="weather-temp">{Math.round(weather.current.temp)}°</div>
-            <div className="weather-desc">{weather.current.description}</div>
+  return (
+    <div className="layout">
+      <Sidebar />
+      <main className="content">
+        <h1>Dashboard</h1>
+
+        {weather && (
+          <div className="weather-box">
+            <h3>Weather in {weather.city}</h3>
+            <p>{weather.temperature_c}°C – {weather.condition}</p>
+            <p>Humidity: {weather.humidity}% | Wind: {weather.wind_kph} kph</p>
           </div>
-          <div className="weather-forecast">
-            {weather.daily?.slice(0,5).map((d, i) => (
-              <div key={i} className="forecast-day">
-                <div>{new Date(d.dt * 1000).toLocaleDateString(undefined, {weekday: 'short'})}</div>
-                <div>{Math.round(d.temp.day)}°</div>
-              </div>
-            ))}
+        )}
+
+        <div className="grid-2">
+          <ChartCard title="Weekly Eco Actions" data={chartData} />
+
+          <div className="card">
+            <h3>Latest Nudges</h3>
+            <div className="nudge-list">
+              {nudges.length === 0 ? (
+                <p>No nudges yet</p>
+              ) : (
+                nudges.map((n) => (
+                  <NudgeCard key={n.id} {...n} />
+                ))
+              )}
+            </div>
           </div>
         </div>
-      )}
-
+      </main>
     </div>
-  )
+  );
 }

@@ -17,11 +17,13 @@ export default function Navbar() {
         <Link to="/" className="brand">EcoNudge</Link>
       </div>
       <div className="nav-right">
-        <Link to="/nudges">Nudges</Link>
-        <Link to="/planner">Planner</Link>
-        <Link to="/rewards">Rewards</Link>
         {user ? (
           <>
+            <Link to="/">Dashboard</Link>
+            <Link to="/nudges">Nudges</Link>
+            <Link to="/planner">Planner</Link>
+            <Link to="/reports">Reports</Link>
+            <Link to="/rewards">Rewards</Link>
             <span className="greet">Hi, {user.username || user.name}</span>
             <button onClick={handleLogout} className="btn-link">Logout</button>
           </>

@@ -36,7 +36,7 @@ export default function Login() {
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </label>
         {error && <p className="error">{error}</p>}
-        <button type="submit">Login</button>
+        <button type="submit" className="btn primary">Login</button>
       </form>
       <p>No account? <Link to="/register">Register</Link></p>
     </div>

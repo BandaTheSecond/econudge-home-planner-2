@@ -5,6 +5,11 @@ from ..schemas.user_schema import user_schema, users_schema
 
 user_bp = Blueprint("user_bp", __name__)
 
+# ✅ Get status
+@user_bp.route("/status", methods=["GET"])
+def status():
+    return jsonify({"status": "running"}), 200
+
 # ✅ Get all users
 @user_bp.route("/", methods=["GET"])
 def get_users():

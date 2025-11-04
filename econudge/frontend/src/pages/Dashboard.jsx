@@ -55,7 +55,7 @@ export default function Dashboard() {
     async function loadData() {
       try {
         // Load weather
-        const weatherRes = await client.get("/external/weather");
+        const weatherRes = await client.get("/api/weather/weather");
         setWeather(weatherRes.data);
       } catch {
         setWeather({
@@ -79,7 +79,7 @@ export default function Dashboard() {
 
       try {
         // Load carbon data
-        const carbonRes = await client.get("/external/carbon");
+        const carbonRes = await client.get("/api/weather/carbon");
         setCarbonData(carbonRes.data);
       } catch {
         setCarbonData({

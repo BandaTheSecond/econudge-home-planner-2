@@ -12,3 +12,7 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-econudge")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "super-secret-jwt")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
+
+    # Production settings
+    DEBUG = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "yes")
+    TESTING = False

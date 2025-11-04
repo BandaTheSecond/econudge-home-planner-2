@@ -16,3 +16,6 @@ class Config:
     # Production settings
     DEBUG = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "yes")
     TESTING = False
+
+    # CORS settings
+    CORS_ORIGINS = os.getenv("CORS_ORIGINS", "https://frontend-i1ncbrl2q-bandatheseconds-projects.vercel.app").split(",")

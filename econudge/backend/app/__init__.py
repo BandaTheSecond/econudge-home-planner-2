@@ -15,7 +15,7 @@ def create_app():
     ma.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
-    cors.init_app(app)
+    cors.init_app(app, origins=app.config['CORS_ORIGINS'])
 
     # Serve React App - register before blueprints to avoid catching API routes
     @app.route('/', defaults={'path': ''})
